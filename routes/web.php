@@ -16,6 +16,12 @@ $app->get('/', function () use ($app) {
 });
 
 $app->get('/coaches', 'CoachesController@index');
+$app->get('/coaches/{id:[\d]+}', [
+        'as' => 'coaches.show',
+        'uses' => 'CoachesController@show',
+    ]);
+$app->post('/coaches', 'CoachesController@store');
+$app->put('/coaches/{id:[\d]+}', 'CoachesController@update');
 
 
 // $app->get('/hallo/{naam}', function($naam) use ($app) {

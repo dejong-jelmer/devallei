@@ -17,6 +17,7 @@ class CreateCoachesTable extends Migration
             $table->increments('id');
             $table->string('coach');
             $table->string('voornaam')->null();
+            $table->string('tussenvoegsel')->null();
             $table->string('achternaam')->null();
             $table->string('email')->null();
             $table->string('telefoon')->null();

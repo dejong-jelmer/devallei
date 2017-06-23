@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coach;
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Class CoachesController
@@ -20,4 +22,69 @@ class CoachesController
     {
         return Coach::all(); 
     }
+
+    /**
+    * GET /books/{id}
+    * @param integer $id
+    * @return mixed
+    */
+
+    public function show($id)
+    {
+        try {
+            return Coach::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                    'error' => [
+                        'message' => 'coach niet gevonden'
+                    ]
+                ], 404);
+        }
+    }
+
+    /**
+     * POST /coaches
+     * @return  \Symfony\Component\HttpFoundation\Response
+     */
+    public function store(Request $request)
+    {
+        try {
+            
+            $coach = Coach::create($request->all());
+        } catch (\Expetion $e) {
+            dd(get_class($e));
+        }
+
+        return response()->json(['created' => true], 201, [
+                'Location' => route('coaches.show', ['id' => $coach->id ])
+            ]);
+    }
+    
+    /**
+     * PUT /coaches/id
+     * @param  Request $request
+     * @param  $id
+     * @return mixed
+     */
+    public function update(Request $request, $id)
+    {
+        
+        try {
+            
+            $coach = Coach::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                    'error'=> [
+                        'message' => 'coach niet gevonden'
+                    ]
+
+                ], 404);
+        }
+
+        $coach->fill($request->all());
+        $coach->save();
+
+        return $coach;
+    }
+
 }

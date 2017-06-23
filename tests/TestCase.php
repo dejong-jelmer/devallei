@@ -1,5 +1,7 @@
 <?php
 
+// use Illuminate\Http\Response;
+
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
     /**
@@ -11,4 +13,40 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
     {
         return require __DIR__.'/../bootstrap/app.php';
     }
+
+    /**
+     * See if the response has a header
+     *
+     * @param $header
+     * @return $this
+     */
+    
+    public function seeHasHeader($header)
+    {
+        $this->assertTrue(
+                $this->response->headers->has($header),
+                "Response moet een header hebben, {$header} heeft geen header."
+            );
+
+        return $this;
+    }
+
+    /**
+     * Asserts that the response header matches a given regular expresion
+     * @param $header
+     * @param $regexp
+     * @return $this
+     */
+    public function seeHeaderWithRegExp($header, $regexp)
+    {
+        $this->seeHasHeader($header)
+            ->assertRegexp(
+                $regexp,
+                $this->response->headers->get($header)
+                );
+
+        return $this;
+    }
+
+
 }
