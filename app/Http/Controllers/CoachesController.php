@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coach;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Providers\AuthServiceProvider;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -14,22 +16,30 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class CoachesController
 {
     /**
+     * set Auth middleware
+     */
+    function __construct()
+    {
+        // $this->middleware('auth');
+    }
+    /**
      * GET /coaches
      * @return  array
      */
     
     public function index()
     {
-        return Coach::all(); 
+        return Coach::all();
     }
 
+    
     /**
     * GET /books/{id}
     * @param integer $id
     * @return mixed
     */
 
-    public function show($id)
+    public function view($id)
     {
         try {
             return Coach::findOrFail($id);
@@ -46,7 +56,7 @@ class CoachesController
      * POST /coaches
      * @return  \Symfony\Component\HttpFoundation\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
         try {
             
@@ -56,7 +66,7 @@ class CoachesController
         }
 
         return response()->json(['created' => true], 201, [
-                'Location' => route('coaches.show', ['id' => $coach->id ])
+                'Location' => route('coaches.view', ['id' => $coach->id ])
             ]);
     }
     
@@ -85,6 +95,31 @@ class CoachesController
         $coach->save();
 
         return $coach;
+    }
+
+    /**
+     * DELETE /coaches/id 
+     * @param  $id
+     *
+     * @return  \Illuminate\Http\JsonResponse
+     */
+    public function delete($id)
+    {
+        try {
+            
+            $coach = Coach::findOrFail($id);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+
+                    'error' => [
+                        'message' => 'coach niet gevonden'
+                    ]
+                ], 404);
+        }
+
+        $coach->delete();
+        return response(null, 204);
     }
 
 }

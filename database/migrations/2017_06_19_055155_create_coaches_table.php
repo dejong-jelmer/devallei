@@ -15,7 +15,7 @@ class CreateCoachesTable extends Migration
     {
         Schema::create('coaches', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('coach');
+            $table->string('coach')->unique();
             $table->string('voornaam')->null();
             $table->string('tussenvoegsel')->null();
             $table->string('achternaam')->null();

@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\User;
+use App\Models\Coach;
+
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -11,9 +14,21 @@
 |
 */
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(User::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
+        'naam' => $faker->name,
+    ];
+});
+
+$factory->define(Coach::class, function (Faker\Generator $faker) {
+    
+    return [
+        'coach' => $faker->name,
+        'voornaam' => $faker->name,
+        'tussenvoegsel' => str_random(2),
+        'achternaam' => $faker->name,
         'email' => $faker->email,
     ];
 });
+
+

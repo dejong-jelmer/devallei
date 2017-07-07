@@ -15,7 +15,9 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('pin_code');
+            $table->string('naam')->unique();
+            $table->string('wachtwoord');
+            $table->string('api_token', 60)->unique();
             $table->timestamps();
         });
     }

@@ -9,70 +9,57 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CoachesControllerTest extends TestCase
 {
+    
+    use DatabaseMigrations;
+
     /** 
      * @test 
      */
     public function index_status_code_should_be_200()
     {
-        $this->get('/coaches')->seeStatusCode(200);
+        $this->get('api/v1/coaches')->seeStatusCode(200);
     }
 
 
     /**
      * @test
      */
-    public function index_should_return_collection_of_records()
+    public function index_should_return_a_collection_of_records()
     {
-        $this
-            ->get('/coaches')
-            ->seeJson([
-                'id' => 1,
-                'coach' => 'Tim',
-                'voornaam'=> 'Tim',
-                'tussenvoegsel' => 'de',
-                'achternaam' => 'Boer',
-                'email' => 'timdeboer@live.nl',
-                'telefoon' => '024-1234567',
-                'mobiel' => '06-12345678',
-                'straat' => 'Daliastraat',
-                'huisnummer' => '28',
-                'postcode' => '6524DF',
-            ])
-            ->seeJson([
-                'id' => 2,
-                'coach' => 'Judith',
-                'voornaam'=> 'Judith',
-                'tussenvoegsel' => '',
-                'achternaam' => 'Fransen',
-                'email' => 'j.fransen@gmail.com',
-                'telefoon' => '024-7654321',
-                'mobiel' => '06-87654321',
-                'straat' => 'Dreef',
-                'huisnummer' => '313',
-                'postcode' => '6523MS',
-            ]);
+        $coaches = factory('App\Models\Coach', 2)->create();
+
+        $this->get('/api/v1/coaches');
+
+        foreach ($coaches as $coach) {
+            $this->seeJson(['coach' => $coach->coach]);
+        }
+
+        
     }
 
     /**
     * @test
     **/
-    public function show_should_return_a_valid_coach()
+    public function view_should_return_a_valid_coach()
     {
+        
+        $coach = factory('App\Models\Coach')->create();
+        // dd($coach->id);
         $this
-            ->get('/coaches/1')
+            ->get("/api/v1/coaches/{$coach->id}")
             ->seeStatusCode(200)
             ->seeJson([
-                'id' => 1,
-                'coach' => 'Tim',
-                'voornaam' => 'Tim',
-                'tussenvoegsel' => 'de',
-                'achternaam' => 'Boer',
-                'email' => 'timdeboer@live.nl',
-                'telefoon' => '024-1234567',
-                'mobiel' => '06-12345678',
-                'straat' => 'Daliastraat',
-                'huisnummer' => '28',
-                'postcode' => '6524DF',
+                'id' => $coach->id,
+                'coach' => $coach->coach,
+                'voornaam' => $coach->voornaam,
+                // 'tussenvoegsel' => $coach->tussenvoegsel,
+                // 'achternaam' => $coach->achternaam,
+                // 'email' => $coach->email,
+              //   'telefoon' => '024-1234567',
+              //   'mobiel' => '06-12345678',
+              //   'straat' => 'Daliastraat',
+              //   'huisnummer' => '28',
+              //   'postcode' => '6524DF',
             ]);
 
         $data = json_decode($this->response->getContent(), true);
@@ -84,10 +71,10 @@ class CoachesControllerTest extends TestCase
     /**
     * @test
     **/
-    public function show_should_fail_when_coach_id_does_not_exist()
+    public function view_should_fail_when_coach_id_does_not_exist()
     {
             $this
-                ->get('/coaches/99999')
+                ->get('api/v1/coaches/9999999')
                 ->seeStatusCode(404)
                 ->seeJson([
                     'error' => [
@@ -99,9 +86,9 @@ class CoachesControllerTest extends TestCase
     /**
     * @test
     **/
-    public function show_route_should_not_match_an_invalid_route()
+    public function view_route_should_not_match_an_invalid_route()
     {
-        $this->get('/coaches/this-is-invalid');
+        $this->get('/api/v1/coaches/this-is-invalid');
 
         $this->assertNotRegExp(
             '/coach niet gevonden/',
@@ -113,9 +100,9 @@ class CoachesControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_save_new_choach_in_database()
+    public function create_should_save_new_choach_in_database()
     {
-        $this->post('/coaches', [
+        $this->post('/api/v1/coaches', [
                 'coach' => 'Henk',
                 'voornaam' => 'Henk',
                 'tussenvoegsel' => '',
@@ -136,9 +123,9 @@ class CoachesControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_should_respond_with_a_201_and_location_header_when_successful()
+    public function create_should_respond_with_a_201_and_location_header_when_successful()
     {
-        $this->post('/coaches', [
+        $this->post('/api/v1/coaches', [
              'coach' => 'Henk',
              'voornaam' => 'Henk',
              'tussenvoegsel' => '',
@@ -159,32 +146,32 @@ class CoachesControllerTest extends TestCase
     /** @test **/
     public function update_should_only_change_fillable_fields()
     {
-        $this->notSeeInDatabase('coaches', [
-                'coach' => 'Marco',
-            ]);
-
-        $this->put('/coaches/1', [
-                'id' => 5,
-                'coach' => 'Tim',
-                'voornaam' => 'Tim',
-                'tussenvoegsel' => 'de',
-                'achternaam' => 'Boer',
-                'email' => 'timdeboer@live.nl',
+        $coach = factory('App\Models\Coach')->create();
+        
+        
+        $this->put("/api/v1/coaches/{$coach->id}", [
+                'id' => $coach->id,
+                'coach' => $coach->coach,
+                'voornaam' => $coach->voornaam,
+                'tussenvoegsel' => $coach->tussenvoegsel,
+                'achternaam' => $coach->achternaam,
+                'email' => $coach->email,
             ]);
 
         $this
             ->seeStatusCode(200)
             ->seeJson([
-                'id' => 1,
-                'coach' => 'Tim',
-                'voornaam' => 'Tim',
-                'tussenvoegsel' => 'de',
-                'achternaam' => 'Boer',
-                'email' => 'timdeboer@live.nl',
+                'id' => $coach->id,
+                'coach' => $coach->coach,
+                'voornaam' => $coach->voornaam,
+                'tussenvoegsel' => $coach->tussenvoegsel,
+                'achternaam' => $coach->achternaam,
+                'email' => $coach->email,
             ])
         ->seeInDatabase('coaches', [
-                'coach' => 'Tim',
+                'coach' => $coach->coach,
             ]);
+
     }
 
     /**
@@ -193,7 +180,7 @@ class CoachesControllerTest extends TestCase
     public function update_should_fail_with_an_invalid_id()
     {
         $this
-            ->put('/coaches/9999999999999999')
+            ->put('/api/v1/coaches/9999999999999999')
             ->seeStatusCode(404)
             ->seeJsonEquals([
                     'error' => [
@@ -208,8 +195,47 @@ class CoachesControllerTest extends TestCase
      */
     public function update_should_not_match_an_invalid_route()
     {
-        $this->put('coaches/this-is-invalid')
+        $this->put('/api/v1/coaches/this-is-invalid')
         ->seeStatusCode(404);
+    }
+
+    /**
+     * @test
+     */
+    public function delete_should_remove_a_valid_coach()
+    {
+        $coach = factory('App\Models\Coach')->create();
+        $this
+            ->delete("/api/v1/coaches/{$coach->id}")
+            ->seeStatusCode(204)
+            ->isEmpty();
+
+        $this->notSeeInDatabase('coaches', ['id' => $coach->id]);
+    }
+
+    /**
+     * @test
+     */
+    public function destroy_should_return_a_404_with_an_invalid_id()
+    {
+        $this
+            ->delete('/api/v1/coaches/999999999')
+            ->seeStatusCode(404)
+            ->seeJsonEquals([
+                    'error' => [
+                        'message' => 'coach niet gevonden'
+                    ]
+                ]);
+    }
+
+    /**
+     * @test
+     */
+    public function destroy_should_not_match_an_invalid_route()
+    {
+            $this
+                ->delete('/api/v1/coaches/this-is-invalid')
+                ->seeStatusCode(404);
     }
 
 }

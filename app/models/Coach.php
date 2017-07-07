@@ -10,6 +10,7 @@ class Coach extends Model
 {
     
     protected $fillable = [
+        'id',
         'coach',
         'voornaam',
         'tussenvoegsel',

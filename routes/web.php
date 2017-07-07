@@ -11,17 +11,26 @@
 |
 */
 
-$app->get('/', function () use ($app) {
-    return $app->version();
-});
+$app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], function($app){
 
-$app->get('/coaches', 'CoachesController@index');
-$app->get('/coaches/{id:[\d]+}', [
-        'as' => 'coaches.show',
-        'uses' => 'CoachesController@show',
-    ]);
-$app->post('/coaches', 'CoachesController@store');
-$app->put('/coaches/{id:[\d]+}', 'CoachesController@update');
+    $app->get('/', function() {   
+        return view('index');
+    });
+
+    //coach routes
+    $app->get('coaches', 'CoachesController@index');
+    $app->get('coaches/{id:[\d]+}', [
+            'as' => 'coaches.view',
+            'uses' => 'CoachesController@view',
+        ]);
+    $app->post('coaches', 'CoachesController@create');
+    $app->put('coaches/{id:[\d]+}', 'CoachesController@update');
+    $app->delete('coaches/{id:[\d]+}', 'CoachesController@delete');
+
+
+    // user routes
+    $app->post('users', 'UsersController@create');
+});
 
 
 // $app->get('/hallo/{naam}', function($naam) use ($app) {

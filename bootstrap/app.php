@@ -63,13 +63,17 @@ $app->singleton(
 //    App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
 
 $app->middleware([
         App\Http\Middleware\RequestLogMiddleware::class
     ]);
+
+$app->routeMiddleware([
+    'cors' => 'palanik\lumen\Middleware\LumenCors',
+]);
 
 // learning: Lumen Programming guide
 // $app->middleware([
@@ -88,7 +92,7 @@ $app->middleware([
 */
 
 // $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
 /*

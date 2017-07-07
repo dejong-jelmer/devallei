@@ -1,9 +1,11 @@
 <?php
-
-// use Illuminate\Http\Response;
+use Illuminate\Http\Response;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
+    
+    use MockeryPHPUnitIntegration;
     /**
      * Creates the application.
      *
