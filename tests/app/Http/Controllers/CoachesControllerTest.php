@@ -74,12 +74,11 @@ class CoachesControllerTest extends TestCase
     public function view_should_fail_when_coach_id_does_not_exist()
     {
             $this
-                ->get('api/v1/coaches/9999999')
+                ->get('api/v1/coaches/9999999', ['Accept' => 'application/json'])
                 ->seeStatusCode(404)
                 ->seeJson([
-                    'error' => [
-                        'message' => 'coach niet gevonden'
-                    ]
+                    'message' => 'Not Found',
+                    'status' => 404
                 ]);
     }
 

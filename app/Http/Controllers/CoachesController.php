@@ -34,22 +34,22 @@ class CoachesController
 
     
     /**
-    * GET /books/{id}
+    * GET /coaches/{id}
     * @param integer $id
     * @return mixed
     */
 
     public function view($id)
     {
-        try {
+        // try {
             return Coach::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                    'error' => [
-                        'message' => 'coach niet gevonden'
-                    ]
-                ], 404);
-        }
+        // } catch (ModelNotFoundException $e) {
+        //     return response()->json([
+        //             'error' => [
+        //                 'message' => 'coach niet gevonden'
+        //             ]
+        //         ], 404);
+        // }
     }
 
     /**
