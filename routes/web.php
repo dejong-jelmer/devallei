@@ -32,22 +32,3 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     $app->post('users', 'UsersController@create');
 });
 
-
-// $app->get('/hallo/{naam}', function($naam) use ($app) {
-
-//     return "Hallo {$naam}";
-// });
-
-// $app->get('/request', function (Illuminate\Http\Request $request) {
-//     return "Hallo " . $request->get('name', 'stranger');
-// });
-
-// $app->get('/response', function (Illuminate\Http\Request $request) {
-//     if($request->wantsJson()) {
-//         return response()->json(['greeting' => 'Hello stranger']);
-//     }
-
-
-//     return response()
-//     ->make('Hello stranger', 200, ['Content-Type', 'text/plain']);
-// });

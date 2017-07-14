@@ -44,7 +44,7 @@ class CoachesControllerTest extends TestCase
     {
         
         $coach = factory('App\Models\Coach')->create();
-        // dd($coach->id);
+
         $this
             ->get("/api/v1/coaches/{$coach->id}")
             ->seeStatusCode(200)
@@ -52,14 +52,9 @@ class CoachesControllerTest extends TestCase
                 'id' => $coach->id,
                 'coach' => $coach->coach,
                 'voornaam' => $coach->voornaam,
-                // 'tussenvoegsel' => $coach->tussenvoegsel,
-                // 'achternaam' => $coach->achternaam,
-                // 'email' => $coach->email,
-              //   'telefoon' => '024-1234567',
-              //   'mobiel' => '06-12345678',
-              //   'straat' => 'Daliastraat',
-              //   'huisnummer' => '28',
-              //   'postcode' => '6524DF',
+                'tussenvoegsel' => $coach->tussenvoegsel,
+                'achternaam' => $coach->achternaam,
+                'email' => $coach->email,
             ]);
 
         $data = json_decode($this->response->getContent(), true);
@@ -99,7 +94,7 @@ class CoachesControllerTest extends TestCase
     /**
      * @test
      */
-    public function create_should_save_new_choach_in_database()
+    public function create_should_save_new_coach_in_database()
     {
         $this->post('/api/v1/coaches', [
                 'coach' => 'Henk',
