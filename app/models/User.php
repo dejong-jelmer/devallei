@@ -18,7 +18,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'naam', 'wachtwoord', 'api_token',
+        'naam', 
+        'wachtwoord', 
+        'api_token',
     ];
 
     /**
@@ -27,6 +29,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = [
-        'wachtwoord', 'api_token',  
+        'wachtwoord', 
+        'api_token',  
     ];
 }

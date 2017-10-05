@@ -1,7 +1,11 @@
 <?php
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Coach;
+use App\Models\Status;
+use App\Models\Student;
+use App\Models\Attendance;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +32,46 @@ $factory->define(Coach::class, function (Faker\Generator $faker) {
         'tussenvoegsel' => str_random(2),
         'achternaam' => $faker->name,
         'email' => $faker->email,
+        'huisnummer' => random_int(0, 999)."",
+        'mobiel' => random_int(0000000000, 9999999999)."",
+        'postcode' => random_int(0000, 9999) . str_random(2),
+        'straat' => str_random(5),
+        'telefoon' => random_int(0000000000, 9999999999)."",
     ];
 });
+
+$factory->define(Student::class, function (Faker\Generator $faker) {
+    return [
+        'coach_id' => /* random_int(0, 2)."" */ 1,
+        'voornaam' => $faker->name,
+        'tussenvoegsel' => str_random(2),
+        'achternaam' => $faker->name,
+        'emailadres' => $faker->email,
+        'huisnummer' => random_int(0, 999)."",
+        'postcode' => random_int(0000, 9999) . str_random(2),
+        'straat' => str_random(5),
+        'telefoon_1' => random_int(0000000000, 9999999999)."",
+        'leerlingnummer' => random_int(00000, 99999)."",
+
+    ];
+});
+
+$factory->define(Attendance::class, function (Faker\Generator $faker) {
+    return [
+        'student_id' => /* random_int(0, 2)."" */ 1,
+        'aanwezig' => Carbon::now(),
+        'afwezig' => Carbon::now(),
+    ];
+
+$factory->define(Status::class, function (Faker\Generator $faker) {
+    return [
+        'status' => str_random(5),
+        // 'aanwezig' => Carbon::now(),
+        // 'afwezig' => Carbon::now(),
+    ];
+});
+
+
+
 
 

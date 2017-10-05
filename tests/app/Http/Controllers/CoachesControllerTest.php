@@ -30,10 +30,15 @@ class CoachesControllerTest extends TestCase
 
         $this->get('/api/v1/coaches');
 
-        foreach ($coaches as $coach) {
-            $this->seeJson(['coach' => $coach->coach]);
-        }
+        // foreach ($coaches as $coach) {
+        //     $this->seeJson(['coach' => $coach->coach]);
+        // }
 
+        $expected = [
+            'data' => $coaches->toArray()
+        ];
+
+        $this->seeJsonEquals($expected);
         
     }
 
@@ -72,7 +77,7 @@ class CoachesControllerTest extends TestCase
                 ->get('api/v1/coaches/9999999', ['Accept' => 'application/json'])
                 ->seeStatusCode(404)
                 ->seeJson([
-                    'message' => 'Not Found',
+                    'error' => ['message' => 'coach niet gevonden'],
                     'status' => 404
                 ]);
     }
@@ -137,7 +142,9 @@ class CoachesControllerTest extends TestCase
             ->seeHeaderWithRegExp('Location', '#/coaches/[\d]+$#');
     }
 
-    /** @test **/
+    /** 
+     * @test
+     */
     public function update_should_only_change_fillable_fields()
     {
         $coach = factory('App\Models\Coach')->create();
@@ -231,5 +238,34 @@ class CoachesControllerTest extends TestCase
                 ->delete('/api/v1/coaches/this-is-invalid')
                 ->seeStatusCode(404);
     }
+
+    /**
+     * @test
+     */
+    // public function view_should_return_a_valid_coachgroup()
+    // {
+    //     $student = factory('App\Models\Student')->create();
+
+    //     $this
+    //         ->get("/api/v1/coachgroep/1")
+    //         ->seeStatusCode(200)
+    //         ->seeJson([
+    //             // 'id' => $student->id,
+    //             'coach_id' => $student->coach_id,
+    //             'voornaam' => $student->voornaam,
+    //             'tussenvoegsel' => $student->tussenvoegsel,
+    //             'achternaam' => $student->achternaam,
+    //             'emailadres' => $student->email,
+    //             'leerlingnummer' => $student->leerlingnummer,
+    //         ]);
+
+    //     $data = json_decode($this->response->getContent(), true);
+
+    //     $this->assertArrayHasKey('created_at', $data);
+    //     $this->assertArrayHasKey('updated_at', $data);
+        
+    // }
+    
+    
 
 }

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Coach;
 use App\Models\User;
+use App\Models\Coach;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -26,10 +27,11 @@ class CoachesController
      * GET /coaches
      * @return  array
      */
-    
+   
     public function index()
     {
-        return Coach::all();
+        // return Coach::all();
+        return [ 'data' => Coach::all()->toArray() ];
     }
 
     
@@ -47,8 +49,10 @@ class CoachesController
             return response()->json([
                     'error' => [
                         'message' => 'coach niet gevonden'
-                    ]
-                ], 404);
+                    ],
+
+                    'status' => 404
+                    ], 404);
         }
     }
 
@@ -121,5 +125,6 @@ class CoachesController
         $coach->delete();
         return response(null, 204);
     }
+
 
 }

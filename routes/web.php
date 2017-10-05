@@ -18,7 +18,7 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     });
 
     //coach routes
-    $app->get('coaches', 'CoachesController@index');
+    $app->get('coachdata', 'CoachesController@index');
     $app->get('coaches/{id:[\d]+}', [
             'as' => 'coaches.view',
             'uses' => 'CoachesController@view',
@@ -26,9 +26,21 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     $app->post('coaches', 'CoachesController@create');
     $app->put('coaches/{id:[\d]+}', 'CoachesController@update');
     $app->delete('coaches/{id:[\d]+}', 'CoachesController@delete');
+    
 
+    // group routes
+    $app->get('coachgroep/alle', 'CoachGroupController@viewCoachGroups');
+    $app->get('coachgroep/{id:[\d]+}', 'CoachGroupController@viewCoachGroup');
 
     // user routes
     $app->post('users', 'UsersController@create');
+
+    // student routes
+    $app->get('leerlingen', 'StudentsController@view');
+
+    // attendance routes
+    $app->put('leerlingen/updatestatus/{id:[\d]+}', 'AttendanceController@updateStudentAttendance');
+
+    
 });
 
