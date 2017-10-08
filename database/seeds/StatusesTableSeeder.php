@@ -11,47 +11,25 @@ class StatusesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::Table('statuses')->insert([
-                'status' => 'afwezig',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
+        
+        $statuses = [
+            'afwezig',
+            'aanwezig',
+            'ziek',
+            'bijzonder_verlof',
+            'geschorst',
+            'geoorloofd_verzuim',
+            'ongeoorloofd_verzuim',
+        ];
 
-        DB::Table('statuses')->insert([
-                'status' => 'aanwezig',
+        foreach ($statuses as $status) {
+            DB::Table('statuses')->insert([
+                'status' => $status,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
-            
-        DB::Table('statuses')->insert([
-                'status' => 'ziek',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-
-        DB::Table('statuses')->insert([
-                'status' => 'bijzonder_verlof',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-
-        DB::Table('statuses')->insert([
-                'status' => 'geschorst',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-
-        DB::Table('statuses')->insert([
-                'status' => 'geoorloofd_verzuim',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-
-        DB::Table('statuses')->insert([
-                'status' => 'ongeoorloofd_verzuim',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
+        }
+        
     }
 }
             

@@ -15,8 +15,8 @@ class CreateStudentdatasTable extends Migration
     {
         Schema::create('studentdatas', function (Blueprint $table) {
             $table->increments("id");
-            $table->integer("student_id")->unique();
-            $table->string("leerlingnummer")->unique();
+            $table->integer("student_id");
+            $table->string("leerlingnummer");
             $table->string("voornaam");
             $table->string("tussenvoegsel");
             $table->string("achternaam");

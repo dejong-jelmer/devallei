@@ -6,6 +6,7 @@ use App\Models\Coach;
 use App\Models\Status;
 use App\Models\Student;
 use App\Models\Attendance;
+use App\Models\Studentdata;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +27,10 @@ $factory->define(User::class, function (Faker\Generator $faker) {
 
 $factory->define(Coach::class, function (Faker\Generator $faker) {
     
+    $coach = $faker->name;
     return [
-        'coach' => $faker->name,
-        'voornaam' => $faker->name,
+        'coach' => $coach,
+        'voornaam' => $coach,
         'tussenvoegsel' => str_random(2),
         'achternaam' => $faker->name,
         'email' => $faker->email,
@@ -42,16 +44,7 @@ $factory->define(Coach::class, function (Faker\Generator $faker) {
 
 $factory->define(Student::class, function (Faker\Generator $faker) {
     return [
-        'coach_id' => /* random_int(0, 2)."" */ 1,
-        'voornaam' => $faker->name,
-        'tussenvoegsel' => str_random(2),
-        'achternaam' => $faker->name,
-        'emailadres' => $faker->email,
-        'huisnummer' => random_int(0, 999)."",
-        'postcode' => random_int(0000, 9999) . str_random(2),
-        'straat' => str_random(5),
-        'telefoon_1' => random_int(0000000000, 9999999999)."",
-        'leerlingnummer' => random_int(00000, 99999)."",
+        'status_id' => 1,
 
     ];
 });
@@ -62,6 +55,7 @@ $factory->define(Attendance::class, function (Faker\Generator $faker) {
         'aanwezig' => Carbon::now(),
         'afwezig' => Carbon::now(),
     ];
+});
 
 $factory->define(Status::class, function (Faker\Generator $faker) {
     return [
@@ -71,7 +65,20 @@ $factory->define(Status::class, function (Faker\Generator $faker) {
     ];
 });
 
-
+$factory->define(Studentdata::class, function (Faker\Generator $faker) {
+    return [
+        'student_id' => random_int(0, 200),
+        'voornaam' => $faker->name,
+        'tussenvoegsel' => str_random(2),
+        'achternaam' => $faker->name,
+        'emailadres' => $faker->email,
+        'huisnummer' => random_int(0, 999)."",
+        'postcode' => random_int(0000, 9999) . str_random(2),
+        'straat' => str_random(5),
+        'telefoon_1' => random_int(0000000000, 9999999999)."",
+        'leerlingnummer' => random_int(00000, 99999)."",
+    ];
+});
 
 
 
