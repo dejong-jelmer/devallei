@@ -30,20 +30,40 @@ class StudentsController
      * @param  
      * @return  \Symfony\Component\HttpFoundation\Response
      */
-    public function view()
+    public function viewData()
     {   
-        $students = Student::all();
-        $response = [];
-        foreach ($students as $student) {
-            array_push($response, $student->studentdata()->get());
-        }
-            return [ 'data' => $response ];
-        // return [ 'data' => $student->studentdata()->get() ];
+        
+        $students = Student::with('studentdata');
+
+        return [ 'data' => $students->get() ];
         
     }
 
     
+    public function viewAllStatuses()
+    {
+        $students = Student::with('status');
 
+        return $students->get(); 
+    }
+
+    public function viewSingelStatus($id)
+    {
+        try {
+
+            $student = Student::findOrFail($id)->status()->first();
+      
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+
+                    'error' => [
+                        'message' => 'Leerling niet gevonden'
+                    ]
+                ], 404);
+        }
+
+        return response()->json(['status' => $student->status ], 200);
+    }
 
 
 }

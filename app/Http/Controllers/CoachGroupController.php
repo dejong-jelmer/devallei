@@ -48,7 +48,7 @@ class CoachGroupController
 
            return $coach = Coach::findOrFail($id)->getStudents()->toArray();
       
-       } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
 
                     'error' => [

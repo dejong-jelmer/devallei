@@ -36,10 +36,12 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     $app->post('users', 'UsersController@create');
 
     // student routes
-    $app->get('leerlingen', 'StudentsController@view');
+    $app->get('leerlingen/data', 'StudentsController@viewData');
+    $app->get('leerlingen/status', 'StudentsController@viewAllStatuses');
+    $app->get('leerlingen/status/{id:[\d]+}', 'StudentsController@viewSingelStatus');
 
     // attendance routes
-    $app->put('leerlingen/updatestatus/{id:[\d]+}', 'AttendanceController@updateStudentAttendance');
+    $app->get('leerlingen/updatestatus/{id:[\d]+}', 'AttendanceController@updateStudentAttendance');
 
     
 });
