@@ -15,11 +15,12 @@ class StatusesTableSeeder extends Seeder
         $statuses = [
             'afwezig',
             'aanwezig',
+            'tussen door uit',
+            'activiteit',
+            'bso',
             'ziek',
-            'bijzonder_verlof',
-            'geschorst',
-            'geoorloofd_verzuim',
-            'ongeoorloofd_verzuim',
+            'ziek naar huis',
+            'bijzonder verlof',
         ];
 
         foreach ($statuses as $status) {
@@ -32,4 +33,3 @@ class StatusesTableSeeder extends Seeder
         
     }
 }
-            
