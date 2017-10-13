@@ -3,19 +3,6 @@
     <head>
         <meta charset="UTF-8">
         <script src="jquery-3.2.1.js"></script>
-        <style>
-            .orangeBckg {
-                background: "orange"; 
-            }
-
-            .redBckg {
-                background: "red"; 
-            }
-
-            .greenBckg {
-                background: "green"; 
-            
-        </style>
      </head>
     <body>
     <div id="testoutput"></div>
@@ -37,91 +24,95 @@
     </table>
         <script>
             jQuery(document).ready(function(){
-                
-                    $.getJSON("http://devallei.dev/api/v1/coachgroep/alle", function(data){
-                        
-                        $.each(data, function(i, coach){
-                                // console.log('i = '+ i);
-                                // console.log('coach id = '+ coach.id);
-                                // console.log('coach naam = '+ coach.coach);
-
-                                // $("#output").val(coach.id);
-                                // $("#output").html(coach.coach);
-                                
-                                $("#coachGroupOutput").append("<button class='coachGroupButton' value='"+coach.id+"'>"+coach.coach+"</button>"+" <br>");
-                            
-                        });
-
-                        $('.coachGroupButton').click(function(){
-                            
-                            $("#studentsOutput").empty();
-                            
-                            $.getJSON("http://devallei.dev/api/v1/coachgroep/"+this.value, function(data){  
-                                
-                                $.each(data, function(i, student){
-                                console.log('index = '+ i);
-                                console.log('student id = '+ student.id);
-                                console.log('student status_id = '+ student.status_id);
-                                console.log('student naam = '+ student.studentdata.voornaam);
-                                console.log('student status = '+ student.status.status);
-
-                                
-                                    $("#studentsOutput").append("<button id='studentBtn_"+student.id+"'  class='studentButton greenBckg' type='button' value='"+student.id+"'>"+student.studentdata.voornaam+"</button> <br>");
-
-                                    if(student.status.status == "aanwezig") {
-                                        $("#studentBtn_"+student.id).css({'background': 'green'});
-                                    }
-
-                                    if(student.status.status == "afwezig") {
-                                        $("#studentBtn_"+student.id).css({'background':'red'});
-                                    }
-                                
-                                    // $.ajax({url:'http://devallei.dev/api/v1/leerlingen/status/'+student.id, type:'GET', success: function(data){
-                                    //         $.each(data, function(i, status) {
-                                    //             // alert(status);
-                                    //             if(status == "afwezig") {
-
-                                    //                 $(".studentButton").style.background="red";
-                                    //             } else if (status == "aanwezig") {
-                                    //                 $(".studentButton").style.background="green";
-
-                                    //             }
-                                    //         });
-
-                                    //     }
-                                    // });
-                                });
-
-
-                                $('.studentButton').click(function(){
-                                    var studentBtn = this;
-                                    
-                                    return $.ajax({
-                                        url: 'http://devallei.dev/api/v1/leerlingen/updatestatus/'+this.value,
-                                        type: 'GET',
-                                        // data: data,
-                                        success: function(data){  
-                                
-                                            $.each(data, function(i, status){
-                                                if(status == "afwezig") {
-                                                    studentBtn.style.background="red";
-                                                } else if (status == "aanwezig"){
-                                                    studentBtn.style.background="green";
-                                                }
-                                            });
-                                        }
-                                    
-                                    });
-                                   
-                                });
-                            });
-                        });
-                       
-
-                    });
-
+                getAllCoachGroups();               
             });
             
         </script>
     </body>
 </html>
+<script>
+    // get all coachgroups from API
+    // @return JSON {all coach.groups}
+    // @return button value coach.id 
+    function getAllCoachGroups()
+    {
+        var url = "http://devallei.dev/api/v1/coachgroep/alle";
+
+        return $.getJSON(url, function(data){
+                        
+            $.each(data, function(i, coach){
+                console.log('i = '+ i);
+                console.log('coach id = '+ coach.id);
+                console.log('coach naam = '+ coach.coach);
+
+                                                
+                $("#coachGroupOutput").append("<button class='coachGroupButton' value='"+coach.id+"'>"+coach.coach+"</button>"+" <br>");
+            
+            });
+
+            $('.coachGroupButton').click(function(){
+                
+                getCoachGroupStudents(this.value);
+
+            });
+        });
+    }
+
+    //  get all students from API related to coachgroup
+    //  @var coach.id (clicked button value)
+    //  @return JSON {all the choachgroups students student[studentdata] / student[status]}
+    //  @return button value student.id
+    function getCoachGroupStudents(id)
+    {
+        var url = "http://devallei.dev/api/v1/coachgroep/"+id
+
+        $("#studentsOutput").empty();
+                            
+        return $.getJSON(url, function(data){  
+            
+            $.each(data, function(i, student){
+                console.log('index = '+ i);
+                console.log('student id = '+ student.id);
+                console.log('student status_id = '+ student.status_id);
+                console.log('student naam = '+ student.studentdata.voornaam);
+                console.log('student status = '+ student.status.status);
+
+            
+                $("#studentsOutput").append("<button id='studentBtn_"+student.id+"'  class='studentButton' type='button' value='"+student.id+"'>"+student.studentdata.voornaam+"</button> <br>");
+
+                if(student.status.status == "aanwezig") {
+                    $("#studentBtn_"+student.id).css({'background': 'green'});
+                }
+
+                if(student.status.status == "afwezig") {
+                    $("#studentBtn_"+student.id).css({'background':'red'});
+                }         
+            });
+
+            
+            $('.studentButton').click(function(){
+                
+                updateStudentStatus(this);
+     
+            });
+        });  
+    }
+
+    // update the students status to "aanwezig"/"afwezig" in API
+    // @var e the click button element
+    // @return JSON{status: aanwezig / afwezig} change button color 
+    function updateStudentStatus(e) 
+    {
+        var url = 'http://devallei.dev/api/v1/leerlingen/updatestatus/'+e.value;
+
+        return $.getJSON(url, function(data) {
+            $.each(data, function(i, status){
+                if(status == "afwezig") {
+                    e.style.background="red";
+                } else if (status == "aanwezig"){
+                    e.style.background="green";
+                }
+            });        
+        });
+    }
+</script>  
