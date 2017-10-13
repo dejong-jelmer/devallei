@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Coach;
 use App\Models\Status;
 use App\Models\Student;
+use App\Models\Coachdata;
 use App\Models\Attendance;
 use App\Models\Studentdata;
 
@@ -27,10 +28,15 @@ $factory->define(User::class, function (Faker\Generator $faker) {
 
 $factory->define(Coach::class, function (Faker\Generator $faker) {
     
-    $coach = $faker->name;
     return [
-        'coach' => $coach,
-        'voornaam' => $coach,
+        'coach' => $faker->name,
+    ];
+});
+
+$factory->define(Coachdata::class, function (Faker\Generator $faker) {
+    
+    return [
+        'voornaam' => $faker->name,
         'tussenvoegsel' => str_random(2),
         'achternaam' => $faker->name,
         'email' => $faker->email,

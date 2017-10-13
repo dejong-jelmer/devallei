@@ -21,9 +21,12 @@ class Status extends Model
 
     // Relationships
     
+    /*
+     * get the student that belongs to the status 
+     */
     public function student()
     {
-        return $this->hasMany('App\models\Student', 'student_id');
+        return $this->hasMany('App\Models\Student', 'student_id');
     }
 
     // Model methods

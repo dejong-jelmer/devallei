@@ -22,11 +22,11 @@ class Student extends Model
     // Relationships
     
     /**
-     * Get the studentdata record from a student.
+     * Get the studentdata record belongs to a student.
      */
     public function studentdata()
     {
-        return $this->hasOne('App\models\Studentdata');    
+        return $this->hasOne('App\Models\Studentdata');    
     }
 
     /**
@@ -34,7 +34,7 @@ class Student extends Model
      */
     public function coach()
     {
-        return $this->belongsTo('App\models\Coach');
+        return $this->belongsTo('App\Models\Coach');
     }
 
     /**
@@ -42,7 +42,7 @@ class Student extends Model
      */
     public function attendance()
     {
-        return $this->hasMany('App\models\Attendance');
+        return $this->hasMany('App\Models\Attendance');
     }
 
     /**

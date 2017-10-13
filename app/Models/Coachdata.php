@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Coach;
+use App\Models\Status;
 use App\Models\Student;
-use App\Models\Coachdata;
+use App\Models\Attendance;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Coach extends Model
+class Coachdata extends Model
 {
     
     protected $fillable = [
@@ -25,30 +27,14 @@ class Coach extends Model
         'postcode',
 
     ];
-    
     // Relationships
-
-    public function students()
+    public function coach()
     {
-       return $this->hasMany('App\Models\Student');
+        return $this->belongsTo('App\Models\Coach');
     }
-
-    /**
-     * Get the coachdata record belogs to a coach.
-     */
-    public function coachData()
-    {
-        return $this->hasOne('App\Models\Coachdata');    
-    }
-
-
+    
 
     // Model methods
-    public function getStudents()
-    {
-       return $this->students()->with('studentdata')->with('status')->get();
-    }
-
-
-
+   
+    
 }

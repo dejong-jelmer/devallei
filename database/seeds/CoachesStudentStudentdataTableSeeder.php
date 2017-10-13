@@ -18,6 +18,8 @@ class CoachesStudentStudentdataTableSeeder extends Seeder
         ->each(
             function ($coach) {
             
+                $coach->coachData()->save(factory(App\Models\Coachdata::class)->make());
+
                 $coach->students()->saveMany(factory(App\Models\Student::class, 10)->make())
                     ->each(
                         function ($student) {

@@ -37,7 +37,10 @@ class Studentdata extends Model
     ];
     // Relationships
     
-    
+    public function student()
+    {
+        return $this->belongsTo('App\Models\Student');
+    }
 
     // Model methods
    
