@@ -28,7 +28,7 @@ class Studentdata extends Model
         'leerlingnummer',
         'telefoon_1',
         'telefoon_2',
-        'emailadres',
+        'email',
         'ouder_verzorger_1',
         'ouder_verzorger_2',
         'aanwezig',

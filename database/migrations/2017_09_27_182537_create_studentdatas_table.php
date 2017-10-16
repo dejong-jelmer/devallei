@@ -28,7 +28,7 @@ class CreateStudentdatasTable extends Migration
             $table->string("woonplaats");
             $table->string("telefoon_1");
             $table->string("telefoon_2");
-            $table->string("emailadres");
+            $table->string("email");
             $table->string("ouder_verzorger_1");
             $table->string("ouder_verzorger_2");
             $table->string("aanwezig");

@@ -75,7 +75,7 @@ $factory->define(Studentdata::class, function (Faker\Generator $faker) {
         'voornaam' => $faker->name,
         'tussenvoegsel' => str_random(2),
         'achternaam' => $faker->name,
-        'emailadres' => $faker->email,
+        'email' => $faker->email,
         'huisnummer' => random_int(0, 999)."",
         'postcode' => random_int(0000, 9999) . str_random(2),
         'straat' => str_random(5),

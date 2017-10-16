@@ -128,7 +128,8 @@ class CoachesController
                     ]
                 ], 404);
         }
-
+        
+        $coach->coachData()->detete();
         $coach->delete();
         return response(null, 204);
     }
