@@ -57,7 +57,7 @@ $factory->define(Student::class, function (Faker\Generator $faker) {
 
 $factory->define(Attendance::class, function (Faker\Generator $faker) {
     return [
-        'student_id' => /* random_int(0, 2)."" */ 1,
+        'student_id' => 1,
         'aanwezig' => Carbon::now(),
         'afwezig' => Carbon::now(),
     ];
@@ -66,8 +66,6 @@ $factory->define(Attendance::class, function (Faker\Generator $faker) {
 $factory->define(Status::class, function (Faker\Generator $faker) {
     return [
         'status' => str_random(5),
-        // 'aanwezig' => Carbon::now(),
-        // 'afwezig' => Carbon::now(),
     ];
 });
 

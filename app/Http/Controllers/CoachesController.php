@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Coach;
 use App\Models\Student;
+use App\Models\Coachdata;
 use Illuminate\Http\Request;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -64,7 +65,12 @@ class CoachesController
     {
         try {
             
-            $coach = Coach::create($request->all());
+            $coach = Coach::create(['coach' => $request->voornaam ]);
+            
+            $coachData = coachData::create($request->all());
+            $coachData->coach()->associate($coach);            
+            $coachData->save();
+
         } catch (\Expetion $e) {
             dd(get_class($e));
         }
@@ -95,7 +101,8 @@ class CoachesController
                 ], 404);
         }
 
-        $coach->fill($request->all());
+        $coach->update(['coach' => $request->voornaam]);
+        $coach->coachData()->first()->update($request->all());
         $coach->save();
 
         return $coach;

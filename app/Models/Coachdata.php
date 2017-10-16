@@ -15,7 +15,6 @@ class Coachdata extends Model
 {
     
     protected $fillable = [
-        'coach',
         'voornaam',
         'tussenvoegsel',
         'achternaam',
