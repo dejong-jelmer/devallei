@@ -23,6 +23,7 @@ class Student extends Model
     
     /**
      * Get the studentdata record belongs to a student.
+     * @return object Studendata model
      */
     public function studentdata()
     {
@@ -31,6 +32,7 @@ class Student extends Model
 
     /**
      * Get the coach that owns the student.
+     * @return object Coach model
      */
     public function coach()
     {
@@ -39,6 +41,7 @@ class Student extends Model
 
     /**
      * Get the attendance that of a the student.
+     * @return object Attendance model
      */
     public function attendance()
     {
@@ -47,13 +50,28 @@ class Student extends Model
 
     /**
      * Get the status of a student (status is owner of student).
+     * @return  object Status model
      */
     public function status()
     {
         return $this->belongsTo('App\Models\Status', 'status_id');
     }
 
+    /**
+     * Get the students reasons for their status
+     * @return object Reason model
+     */
+    public function reason()
+    {
+        return $this->hasManyThrough('App\Models\Reason', 'App\Models\Student');
+    }
+
     // Model methods
+    
+    /**
+     * create time off presence in the database update time off absence
+     * @return null
+     */
     public function createPresence()
     {
         return $this->attendance()->create([
@@ -62,6 +80,10 @@ class Student extends Model
         ]);
     }
 
+    /**
+     * create time off absence in the database update time off presence
+     * @return null
+     */
     public function updateAbsence()
     {
         return $this->attendance()->update([
