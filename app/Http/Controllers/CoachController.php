@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * @package App\Http\Controllers
  */
 
-class CoachesController
+class CoachController
 {
     /**
      * set Auth middleware

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * @package App\Http\Controllers
  */
 
-class UsersController
+class UserController
 {
 
     /**

@@ -18,14 +18,14 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     });
 
     //coach routes
-    $app->get('coachdata', 'CoachesController@index');
+    $app->get('coachdata', 'CoachController@index');
     $app->get('coaches/{id:[\d]+}', [
             'as' => 'coaches.view',
-            'uses' => 'CoachesController@view',
+            'uses' => 'CoachController@view',
         ]);
-    $app->post('coaches', 'CoachesController@create');
-    $app->put('coaches/{id:[\d]+}', 'CoachesController@update');
-    $app->delete('coaches/{id:[\d]+}', 'CoachesController@delete');
+    $app->post('coaches', 'CoachController@create');
+    $app->put('coaches/{id:[\d]+}', 'CoachController@update');
+    $app->delete('coaches/{id:[\d]+}', 'CoachController@delete');
     
 
     // group routes
@@ -33,16 +33,16 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     $app->get('coachgroep/{id:[\d]+}', 'CoachGroupController@viewCoachGroup');
 
     // user routes
-    $app->post('users', 'UsersController@create');
+    $app->post('users', 'UserController@create');
 
     // student routes
-    $app->post('leerlingen', 'StudentsController@create');
-    $app->put('leerlingen/{id:[\d]+}', 'StudentsController@update');
-    $app->delete('leerlingen/{id:[\d]+}', 'StudentsController@delete');
+    $app->post('leerlingen', 'StudentController@create');
+    $app->put('leerlingen/{id:[\d]+}', 'StudentController@update');
+    $app->delete('leerlingen/{id:[\d]+}', 'StudentController@delete');
     
-    $app->get('leerlingen/data', 'StudentsController@viewData');
-    $app->get('leerlingen/status', 'StudentsController@viewAllStatuses');
-    $app->get('leerlingen/status/{id:[\d]+}', 'StudentsController@viewSingelStatus');
+    $app->get('leerlingen/data', 'StudentController@viewData');
+    $app->get('leerlingen/status', 'StudentController@viewAllStatuses');
+    $app->get('leerlingen/status/{id:[\d]+}', 'StudentController@viewSingelStatus');
 
     // attendance routes
     $app->get('leerlingen/updatestatus/{id:[\d]+}', 'AttendanceController@updateStudentAttendance');
