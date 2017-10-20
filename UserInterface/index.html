@@ -9,7 +9,7 @@
     <table>
         <tr>
             <td>Coachgroepen</td>
-            <td><----------------->  </td>
+            <td>-----------------  </td>
             <td>Leerlingen</td>
         </tr>
         <tr>
@@ -81,18 +81,24 @@
                 $("#studentsOutput").append("<button id='studentBtn_"+student.id+"'  class='studentButton' type='button' value='"+student.id+"'>"+student.studentdata.voornaam+"</button> <br>");
 
                 if(student.status.status == "aanwezig") {
-                    $("#studentBtn_"+student.id).css({'background': 'green'});
+                    $("#studentBtn_"+student.id).css({'background': 'green'}).removeClass("afwezig").addClass("aanwezig");
                 }
 
                 if(student.status.status == "afwezig") {
-                    $("#studentBtn_"+student.id).css({'background':'red'});
+                    $("#studentBtn_"+student.id).css({'background':'red'}).removeClass("aanwezig").addClass("afwezig");
                 }         
             });
 
             
             $('.studentButton').click(function(){
-                
-                updateStudentStatus(this);
+                if($(this).hasClass("afwezig")) {
+                    if(confirm("Wil je je aanwezig melden?")) {
+
+                        updateStudentStatus(this);
+                    }
+                } else {
+                    alert("test");
+                }
      
             });
         });  
@@ -103,14 +109,16 @@
     // @return JSON{status: aanwezig / afwezig} change button color 
     function updateStudentStatus(e) 
     {
+        
         var url = 'http://devallei.dev/api/v1/leerlingen/updatestatus/'+e.value;
 
-        return $.getJSON(url, function(data) {
+        return $.post(url, function(data) {
             $.each(data, function(i, status){
                 if(status == "afwezig") {
                     e.style.background="red";
                 } else if (status == "aanwezig"){
                     e.style.background="green";
+                    
                 }
             });        
         });

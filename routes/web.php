@@ -45,8 +45,10 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     $app->get('leerlingen/status/{id:[\d]+}', 'StudentController@viewSingelStatus');
 
     // attendance routes
-    $app->get('leerlingen/updatestatus/{id:[\d]+}', 'AttendanceController@updateStudentAttendance');
+    // $app->get('leerlingen/updatestatus/{id:[\d]+}[/{status}[/{reason_text}]]', 'AttendanceController@updateStudentAttendance');
+    $app->post('leerlingen/updatestatus/{id:[\d]+}', 'AttendanceController@updateStudentAttendance');
 
+    $app->get('leerlingen/status/{id:[\d]+}/reden', 'AttendanceController@viewReason');
     
 });
 

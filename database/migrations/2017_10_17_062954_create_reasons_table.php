@@ -15,7 +15,9 @@ class CreateReasonsTable extends Migration
     {
         Schema::create('reasons', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('reason');
+            $table->integer('student_id');
+            $table->integer('status_id');
+            $table->text('reason')->null();
             $table->timestamps();
         });
     }

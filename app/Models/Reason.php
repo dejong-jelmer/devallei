@@ -15,14 +15,25 @@ class Reason extends Model
 {
     
     protected $fillable = [
+        'status_id',
+        'student_id',
         'reason',
 
     ];
 
     // Relationships
     
+    public function status()
+    {
+        return $this->belongsTo('App\Models\Status');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo('App\Models\Student');
+    }
     
-    // Model methods
+    // Model methods ----------------------------------------------------------
     
     
 }

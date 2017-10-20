@@ -144,7 +144,7 @@ class StudentController
                 ], 404);
         }
 
-        return response()->json(['status' => $student->status ], 200);
+        return response()->json(['status' => $student->status, 'reden' => $student->reason[0]->reason ], 200);
     }
 
 

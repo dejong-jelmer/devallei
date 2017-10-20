@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Coach;
 use App\Models\Status;
+use App\Models\Reason;
 use App\Models\Student;
 use App\Models\Attendance;
 use App\Models\Studentdata;
@@ -43,7 +44,7 @@ class Student extends Model
      * Get the attendance that of a the student.
      * @return object Attendance model
      */
-    public function attendance()
+    public function attendances()
     {
         return $this->hasMany('App\Models\Attendance');
     }
@@ -57,57 +58,27 @@ class Student extends Model
         return $this->belongsTo('App\Models\Status', 'status_id');
     }
 
-    /**
-     * Get the students reasons for their status
-     * @return object Reason model
-     */
-    public function reason()
+    public function reasons()
     {
-        return $this->hasManyThrough('App\Models\Reason', 'App\Models\Student');
+        return $this->hasMany('App\Models\Reason');
     }
 
-    // Model methods
+    
+    // Model methods ----------------------------------------------------------
     
     /**
      * create time off presence in the database update time off absence
      * @return null
      */
-    public function createPresence()
+    public function setAttendance($status, $reason=false)
     {
-        return $this->attendance()->create([
-            'aanwezig_van' => Carbon::now(),
-            'afwezig_tot' => Carbon::now(),
+        return $this->attendances()->create([
+            'tijd' => Carbon::now(),
+            'status_id' => $status->id,
+            'reason_id' => $reason ? $reason->id : 0,
         ]);
     }
 
-    /**
-     * create time off absence in the database update time off presence
-     * @return null
-     */
-    public function updateAbsence()
-    {
-        return $this->attendance()->update([
-            'aanwezig_tot' => Carbon::now(),
-            'afwezig_van' => Carbon::now(),
-        ]);
-    }
 
-    
-    // public function hasAbsenceStatus()
-    // {
-    //     return (bool) $this->status()->wherePivotIn('status_id', [2, 3, 4, 5, 6])->count(); 
-    // }
-
-    // public function hasOkStatus()
-    // {
-    //     return (bool) $this->status()->wherePivotIn('status_id', [1])->count(); 
-    // }
-
-    // public function createStatus()
-    // {
-    //     if(!$this->hasAbsenceStatus()) {
-    //         return $this->status()->update('1');
-    //     }
-    // }
     
 }

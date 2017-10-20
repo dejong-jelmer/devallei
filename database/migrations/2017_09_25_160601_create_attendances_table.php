@@ -16,10 +16,9 @@ class CreateAttendancesTable extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('student_id');
-            $table->datetime('aanwezig_van');
-            $table->datetime('aanwezig_tot');
-            $table->datetime('afwezig_van');
-            $table->datetime('afwezig_tot');
+            $table->integer('status_id');
+            $table->integer('reason_id');
+            $table->datetime('tijd');
             $table->timestamps();
 
         });

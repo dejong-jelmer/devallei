@@ -51,17 +51,11 @@ $factory->define(Coachdata::class, function (Faker\Generator $faker) {
 $factory->define(Student::class, function (Faker\Generator $faker) {
     return [
         'status_id' => 1,
+        'allowed' => true,
 
     ];
 });
 
-$factory->define(Attendance::class, function (Faker\Generator $faker) {
-    return [
-        'student_id' => 1,
-        'aanwezig' => Carbon::now(),
-        'afwezig' => Carbon::now(),
-    ];
-});
 
 $factory->define(Status::class, function (Faker\Generator $faker) {
     return [
@@ -71,7 +65,6 @@ $factory->define(Status::class, function (Faker\Generator $faker) {
 
 $factory->define(Studentdata::class, function (Faker\Generator $faker) {
     return [
-        'student_id' => random_int(0, 200),
         'voornaam' => $faker->name,
         'tussenvoegsel' => str_random(2),
         'achternaam' => $faker->name,

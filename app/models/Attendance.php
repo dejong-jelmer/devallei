@@ -14,10 +14,9 @@ class Attendance extends Model
     
     protected $fillable = [
         'student_id',
-        'aanwezig_van',
-        'aanwezig_tot',
-        'afwezig_van',
-        'afwezig_tot',
+        'status_id',
+        'reason_id',
+        'tijd',
     ];
 
     // Relationships
