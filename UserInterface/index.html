@@ -5,11 +5,13 @@
         <script src="jquery-3.2.1.js"></script>
      </head>
     <body>
-    <div id="testoutput"></div>
+    <input type="hidden" id="signOutStatus">
+    <input type="hidden" id="signOutId">
+    <input type="hidden" id="signOutReason">
     <table>
         <tr>
             <td>Coachgroepen</td>
-            <td>-----------------  </td>
+            <td>       -----------------  </td>
             <td>Leerlingen</td>
         </tr>
         <tr>
@@ -41,9 +43,9 @@
         return $.getJSON(url, function(data){
                         
             $.each(data, function(i, coach){
-                console.log('i = '+ i);
-                console.log('coach id = '+ coach.id);
-                console.log('coach naam = '+ coach.coach);
+                // console.log('i = '+ i);
+                // console.log('coach id = '+ coach.id);
+                // console.log('coach naam = '+ coach.coach);
 
                                                 
                 $("#coachGroupOutput").append("<button class='coachGroupButton' value='"+coach.id+"'>"+coach.coach+"</button>"+" <br>");
@@ -54,7 +56,9 @@
                 
                 getCoachGroupStudents(this.value);
 
+
             });
+        
         });
     }
 
@@ -71,14 +75,14 @@
         return $.getJSON(url, function(data){  
             
             $.each(data, function(i, student){
-                console.log('index = '+ i);
-                console.log('student id = '+ student.id);
-                console.log('student status_id = '+ student.status_id);
-                console.log('student naam = '+ student.studentdata.voornaam);
-                console.log('student status = '+ student.status.status);
+                // console.log('index = '+ i);
+                // console.log('student id = '+ student.id);
+                // console.log('student status_id = '+ student.status_id);
+                // console.log('student naam = '+ student.studentdata.voornaam);
+                // console.log('student status = '+ student.status.status);
 
             
-                $("#studentsOutput").append("<button id='studentBtn_"+student.id+"'  class='studentButton' type='button' value='"+student.id+"'>"+student.studentdata.voornaam+"</button> <br>");
+                $("#studentsOutput").append("<button id='studentBtn_"+student.id+"' name='"+student.studentdata.voornaam+"' class='studentButton' type='button' value='"+student.id+"'>"+"id=:"+student.id+": "+student.studentdata.voornaam+"</button> <br>");
 
                 if(student.status.status == "aanwezig") {
                     $("#studentBtn_"+student.id).css({'background': 'green'}).removeClass("afwezig").addClass("aanwezig");
@@ -86,41 +90,123 @@
 
                 if(student.status.status == "afwezig") {
                     $("#studentBtn_"+student.id).css({'background':'red'}).removeClass("aanwezig").addClass("afwezig");
-                }         
+                }
+
+                if(student.status.status == "tussendoor uit") {
+                    $("#studentBtn_"+student.id).css({'background':'orange'}).removeClass("aanwezig").addClass("tussendoor_uit");
+                }          
             });
 
-            
-            $('.studentButton').click(function(){
-                if($(this).hasClass("afwezig")) {
-                    if(confirm("Wil je je aanwezig melden?")) {
+            $('.studentButton').click(function() {
+                console.log(this.name);
+                var studentId = this.value;
+                var studentName = this.name;
+                var url = 'http://devallei.dev/api/v1/leerlingen/status/'+studentId;
+                $.getJSON(url, function(data) {
+                    if (data.status !== "aanwezig") {
+                        // console.log(studentId);
+                        if (confirm("Hallo "+studentName+" wil je je aanmelden?")) {
 
-                        updateStudentStatus(this);
+                            updateStudentStatus(studentId)
+                        }
                     }
-                } else {
-                    alert("test");
-                }
-     
+
+                    if (data.status == "aanwezig") {
+                        if(confirm("Wil je je afmelden?")) {
+                            var win = openWindow(studentId);
+                            
+                            var timer = setInterval(function() {   
+                                if(win.closed) {  
+                                    clearInterval(timer);  
+                                    var studentId = document.getElementById("signOutId").value;
+                                    var status = document.getElementById("signOutStatus").value;
+                                    if(status == "tussendoor_uit") {
+                                        var reason = '';
+                                        while (reason == '') {
+                                            if(reason = prompt("Wat is de reden?")) {
+                                                updateStudentStatus(studentId, status, reason); 
+
+                                            }
+                                        }
+                                    } else {
+                                        
+                                        updateStudentStatus(studentId, status, reason); 
+                                    }
+                                    
+                                    
+                                    
+                                }  
+                            }, 100); 
+                        }
+                    }
+                });     
             });
         });  
     }
 
-    // update the students status to "aanwezig"/"afwezig" in API
-    // @var e the click button element
-    // @return JSON{status: aanwezig / afwezig} change button color 
-    function updateStudentStatus(e) 
+
+    function updateStudentStatus(student_id, status, reason) 
     {
         
-        var url = 'http://devallei.dev/api/v1/leerlingen/updatestatus/'+e.value;
+        var url = 'http://devallei.dev/api/v1/leerlingen/updatestatus/'+student_id;
 
-        return $.post(url, function(data) {
-            $.each(data, function(i, status){
-                if(status == "afwezig") {
-                    e.style.background="red";
-                } else if (status == "aanwezig"){
-                    e.style.background="green";
-                    
-                }
-            });        
-        });
+       var jqxhr = $.post(url, {
+            'status':status, 
+            'reden':reason
+        },  function(data, status) 
+            {
+                console.log(data);
+                console.log(status);
+                
+            }, "json")
+                .done(function(data){
+                    if(data.status == "afwezig") {
+                        
+                        $("#studentBtn_"+student_id).css({'background': 'red'}).removeClass("aanwezig").addClass("afwezig");
+                    } else if (data.status == "aanwezig"){
+                        $("#studentBtn_"+student_id).css({'background': 'green'}).removeClass("afwezig").addClass("aanwezig");
+                    } else if (data.status == "tussendoor uit") {
+                        $("#studentBtn_"+student_id).css({'background': 'orange'}).removeClass("aanwezig").addClass("tussendoor_uit");
+                    }
+                });    
+    }
+
+    function openWindow(studentId) {
+        var i; 
+        var options = [
+            {
+               value: '',
+               text: '-- Maak keuze --'
+            },
+            {
+               value: 'afmelden',
+               text: 'Afmelden'
+            }, 
+            {
+               value: 'tussendoor_uit',
+               text: 'Tussendoor uit'
+            }
+        ],
+        newWindow = window.open("", null, "height=200,width=400,status=yes,toolbar=no,menubar=no,location=no");  
+        
+        newWindow.document.write("<select onChange='window.opener.setValue("+studentId+", this.value);window.close();'>");
+        
+        for (i=0; i<options.length; i++) {
+            newWindow.document.write("<option value='"+options[i].value+"'>");  
+            newWindow.document.write(options[i].text);  
+            newWindow.document.write("</option>");
+        }
+        
+        newWindow.document.write("</select>");
+        
+        return newWindow;
+    }
+
+    function setValue(studentId, studentStatus) {
+        
+        
+        document.getElementById('signOutId').value = studentId;
+        document.getElementById('signOutStatus').value = studentStatus;
+        // document.getElementById('signOutReason').value = studentReason;
     }
 </script>  

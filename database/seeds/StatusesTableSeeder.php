@@ -15,7 +15,7 @@ class StatusesTableSeeder extends Seeder
         $statuses = [
             'afwezig',
             'aanwezig',
-            'tussen door uit',
+            'tussendoor uit',
             'activiteit',
             'bso',
             'ziek',

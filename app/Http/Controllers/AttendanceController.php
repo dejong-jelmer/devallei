@@ -65,31 +65,39 @@ class AttendanceController
 
         $afwezig = Status::where('status', 'afwezig')->first();
         
-        if ($student->status->status == 'aanwezig' && $status == false) {
+        // if ($student->status->status == 'aanwezig' && $status == false) {
             
-            $student->setAttendance($afwezig);
-            $student->status()->associate($afwezig);
-            $student->save();
+        //     $student->setAttendance($afwezig);
+        //     $student->status()->associate($afwezig);
+        //     $student->save();
 
-            return response()->json(['status' => $student->status->status ], 201);
-        }
+        //     return response()->json(['status' => $student->status->status ], 201);
+        // }
 
-        $tussen_door_uit = Status::where('status', 'tussen door uit')->first();
-
+        $tussendoor_uit = Status::where('status', 'tussendoor uit')->first();
+        $reason = false;
         switch ($status) {
-            case 'tussen_door_uit':
+            case 'afmelden':
+               
+                $student->setAttendance($afwezig);
+                $student->status()->associate($afwezig);
+                $student->save();
+
+                break;
+
+            case 'tussendoor_uit':
                     
                     $reason = Reason::create(['reason' => $reason_text]);
 
                     $reason->student()->associate($student);
-                    $reason->status()->associate($tussen_door_uit);
+                    $reason->status()->associate($tussendoor_uit);
                     $reason->save();
 
-                    $student->setAttendance($tussen_door_uit, $reason);
-                    $student->status()->associate($tussen_door_uit);
+                    $student->setAttendance($tussendoor_uit, $reason);
+                    $student->status()->associate($tussendoor_uit);
                     $student->save();
                 
-                return response()->json(['status' => $student->status->status, 'reden' => $reason->reason ], 201);
+                // return response()->json(['status' => $student->status->status, 'reden' => $reason->reason ], 201);
                 break;
             
             default:
@@ -97,6 +105,7 @@ class AttendanceController
                 break;
         }
 
+        return response()->json(['status' => $student->status->status, 'reden' => ($reason ? $reason->reason : false) ], 201);
         
         // $activiteit = Status::where('status', 'activiteit')->first();
         // $bso = Status::where('status', 'bso')->first();
