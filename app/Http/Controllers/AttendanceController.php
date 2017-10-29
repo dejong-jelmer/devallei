@@ -54,7 +54,7 @@ class AttendanceController
         
         try {
 
-            $status = Status::where('status', $statusUpdate)->first();
+            $status = Status::where('status', $statusUpdate)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => [
@@ -63,11 +63,12 @@ class AttendanceController
             ], 404);
         }
         
-        if ($reasonUpdate !== false) {
-            $reason = Reason::create(['reason' => $reasonUpdate]);
-        }
 
         if ($student->status->status !== $statusUpdate) {
+            if ($reasonUpdate !== false) {
+                $reason = Reason::create(['reason' => $reasonUpdate]);
+            }
+            
             if($reason) {
                 $reason->student()->associate($student);
                 $reason->status()->associate($status);
