@@ -17,6 +17,13 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
         return view('index');
     });
 
+    // user routes
+    $app->post('users', 'UserController@create');
+
+    // status routes
+    $app->get('statuses/alle', 'StatusController@getAllStatuses');
+    $app->get('statuses/selectable', 'StatusController@getSelectableStatuses');
+    
     //coach routes
     $app->get('coachdata', 'CoachController@index');
     $app->get('coaches/{id:[\d]+}', [
@@ -27,13 +34,9 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     $app->put('coaches/{id:[\d]+}', 'CoachController@update');
     $app->delete('coaches/{id:[\d]+}', 'CoachController@delete');
     
-
-    // group routes
+    // coach group routes
     $app->get('coachgroep/alle', 'CoachGroupController@viewCoachGroups');
     $app->get('coachgroep/{id:[\d]+}', 'CoachGroupController@viewCoachGroup');
-
-    // user routes
-    $app->post('users', 'UserController@create');
 
     // student routes
     $app->post('leerlingen', 'StudentController@create');
@@ -49,6 +52,7 @@ $app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], funct
     $app->post('leerlingen/updatestatus/{id:[\d]+}', 'AttendanceController@updateStudentAttendance');
 
     $app->get('leerlingen/status/{id:[\d]+}/reden', 'AttendanceController@viewReason');
+
     
 });
 

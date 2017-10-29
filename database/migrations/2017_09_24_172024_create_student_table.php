@@ -17,7 +17,6 @@ class CreateStudentTable extends Migration
             $table->increments('id');
             $table->integer('coach_id');
             $table->integer('status_id');
-            $table->boolean('allowed');
             $table->timestamps();
 
         });

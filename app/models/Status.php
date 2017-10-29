@@ -17,6 +17,9 @@ class Status extends Model
     
     protected $fillable = [
         'status',
+        'student_selectable',
+        'text',
+
 
     ];
 

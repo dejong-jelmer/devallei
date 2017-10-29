@@ -13,7 +13,7 @@ use App\Providers\AuthServiceProvider;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Class CoachesController
+ * Class AttendanceController
  * @package App\Http\Controllers
  */
 
@@ -33,86 +33,53 @@ class AttendanceController
      *
      * @return  mixed
      */
-    public function updateStudentAttendance($id, Request $request /*$status=false, $reason_text=false*/)
+    public function updateStudentAttendance($id, Request $request)
     {
+        // Check if POST had status and / or reden 
+        $reason = null;
+        array_key_exists('status', $request->toArray()) ? $statusUpdate = $request->status : $statusUpdate = false;
+        array_key_exists('reden', $request->toArray()) ? $reasonUpdate = $request->reden : $reasonUpdate = false;
+        
         try {
             
             $student = Student::findOrFail($id);
             
         } catch (ModelNotFoundException $e) {
             return response()->json([
-
-                    'error' => [
-                        'message' => 'Leerling niet gevonden.'
-                    ]
-                ], 404);
+                'error' => [
+                    'message' => 'Leerling niet gevonden.'
+                ]
+            ], 404);
         }
         
-        // Check if $request->status or $request->reden have been set
-        array_key_exists('status', $request->toArray()) ? $status = $request->status : $status = false;
-        array_key_exists('reden', $request->toArray()) ? $reason_text = $request->reden : $reason_text = false;
+        try {
 
-    
-        $aanwezig = Status::where('status', 'aanwezig')->first();
+            $status = Status::where('status', $statusUpdate)->first();
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => [
+                    'message' => 'Status niet bekend.'
+                ]
+            ], 404);
+        }
+        
+        if ($reasonUpdate !== false) {
+            $reason = Reason::create(['reason' => $reasonUpdate]);
+        }
 
-        if ($student->status->status !== 'aanwezig') {
-            $student->setAttendance($aanwezig);
-            $student->status()->associate($aanwezig);
+        if ($student->status->status !== $statusUpdate) {
+            if($reason) {
+                $reason->student()->associate($student);
+                $reason->status()->associate($status);
+                $reason->save();
+            }
+
+            $student->setAttendance($status, $reason);
+            $student->status()->associate($status);
             $student->save();
-        
-            return response()->json(['status' => $student->status->status ], 201);
         }
 
-        $afwezig = Status::where('status', 'afwezig')->first();
-        
-        // if ($student->status->status == 'aanwezig' && $status == false) {
-            
-        //     $student->setAttendance($afwezig);
-        //     $student->status()->associate($afwezig);
-        //     $student->save();
-
-        //     return response()->json(['status' => $student->status->status ], 201);
-        // }
-
-        $tussendoor_uit = Status::where('status', 'tussendoor uit')->first();
-        $reason = false;
-        switch ($status) {
-            case 'afmelden':
-               
-                $student->setAttendance($afwezig);
-                $student->status()->associate($afwezig);
-                $student->save();
-
-                break;
-
-            case 'tussendoor_uit':
-                    
-                    $reason = Reason::create(['reason' => $reason_text]);
-
-                    $reason->student()->associate($student);
-                    $reason->status()->associate($tussendoor_uit);
-                    $reason->save();
-
-                    $student->setAttendance($tussendoor_uit, $reason);
-                    $student->status()->associate($tussendoor_uit);
-                    $student->save();
-                
-                // return response()->json(['status' => $student->status->status, 'reden' => $reason->reason ], 201);
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-
-        return response()->json(['status' => $student->status->status, 'reden' => ($reason ? $reason->reason : false) ], 201);
-        
-        // $activiteit = Status::where('status', 'activiteit')->first();
-        // $bso = Status::where('status', 'bso')->first();
-        // $ziek = Status::where('status', 'ziek')->first();
-        // $ziek_naar_huis = Status::where('status', 'ziek naar huis')->first();
-        // $bijzonder_verlof = Status::where('status', 'bijzonder verlof')->first();
-        
+        return response()->json(['status' => $student->status->status, 'color' => $student->status->color, 'reden' => ($reason ? $reason->reason : null) ], 201);      
         
         
     }

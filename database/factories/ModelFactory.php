@@ -51,8 +51,6 @@ $factory->define(Coachdata::class, function (Faker\Generator $faker) {
 $factory->define(Student::class, function (Faker\Generator $faker) {
     return [
         'status_id' => 1,
-        'allowed' => true,
-
     ];
 });
 

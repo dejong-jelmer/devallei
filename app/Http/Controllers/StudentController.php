@@ -11,7 +11,7 @@ use App\Providers\AuthServiceProvider;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Class UsersController
+ * Class StudentController
  * @package App\Http\Controllers
  */
 

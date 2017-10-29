@@ -3,27 +3,26 @@
     <head>
         <meta charset="UTF-8">
         <script src="jquery-3.2.1.js"></script>
-     </head>
+    </head>
     <body>
-    <input type="hidden" id="signOutStatus">
-    <input type="hidden" id="signOutId">
-    <input type="hidden" id="signOutReason">
-    <table>
-        <tr>
-            <td>Coachgroepen</td>
-            <td>       -----------------  </td>
-            <td>Leerlingen</td>
-        </tr>
-        <tr>
-            <td>
-                <div id="coachGroupOutput"></div>
-            </td>
-            <td></td>
-            <td>
-                <div id="studentsOutput"></div>
-            </td>
-        </tr>
-    </table>
+        <input type="hidden" id="signOutStatus">
+        <input type="hidden" id="signOutId">
+        <table>
+            <tr>
+                <td>Coachgroepen</td>
+                <td>       -----------------  </td>
+                <td>Leerlingen</td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="coachGroupOutput"></div>
+                </td>
+                <td></td>
+                <td>
+                    <div id="studentsOutput"></div>
+                </td>
+            </tr>
+        </table>
         <script>
             jQuery(document).ready(function(){
                 getAllCoachGroups();               
@@ -43,22 +42,13 @@
         return $.getJSON(url, function(data){
                         
             $.each(data, function(i, coach){
-                // console.log('i = '+ i);
-                // console.log('coach id = '+ coach.id);
-                // console.log('coach naam = '+ coach.coach);
-
-                                                
-                $("#coachGroupOutput").append("<button class='coachGroupButton' value='"+coach.id+"'>"+coach.coach+"</button>"+" <br>");
-            
+                                                                
+                $("#coachGroupOutput").append("<button class='coachGroupButton' value='"+coach.id+"'>"+coach.coach+"</button>"+" <br>");      
             });
 
-            $('.coachGroupButton').click(function(){
-                
+            $('.coachGroupButton').click(function(){  
                 getCoachGroupStudents(this.value);
-
-
-            });
-        
+            });  
         });
     }
 
@@ -71,77 +61,71 @@
         var url = "http://devallei.dev/api/v1/coachgroep/"+id
 
         $("#studentsOutput").empty();
+        // get all student from coachgroup                    
+        return $.getJSON(url, function(data) {  
+            
+            $.each(data, function(i, student) {
                             
-        return $.getJSON(url, function(data){  
-            
-            $.each(data, function(i, student){
-                // console.log('index = '+ i);
-                // console.log('student id = '+ student.id);
-                // console.log('student status_id = '+ student.status_id);
-                // console.log('student naam = '+ student.studentdata.voornaam);
-                // console.log('student status = '+ student.status.status);
-
-            
-                $("#studentsOutput").append("<button id='studentBtn_"+student.id+"' name='"+student.studentdata.voornaam+"' class='studentButton' type='button' value='"+student.id+"'>"+"id=:"+student.id+": "+student.studentdata.voornaam+"</button> <br>");
-
-                if(student.status.status == "aanwezig") {
-                    $("#studentBtn_"+student.id).css({'background': 'green'}).removeClass("afwezig").addClass("aanwezig");
-                }
-
-                if(student.status.status == "afwezig") {
-                    $("#studentBtn_"+student.id).css({'background':'red'}).removeClass("aanwezig").addClass("afwezig");
-                }
-
-                if(student.status.status == "tussendoor uit") {
-                    $("#studentBtn_"+student.id).css({'background':'orange'}).removeClass("aanwezig").addClass("tussendoor_uit");
-                }          
+                $("#studentsOutput").append("<button id='studentBtn_"+student.id+"' name='"+student.studentdata.voornaam+"' class='studentButton' type='button' value='"+student.id+"' style='background:"+student.status.color+"'>"+"id=:"+student.id+": "+student.studentdata.voornaam+"</button> <br>");
             });
 
             $('.studentButton').click(function() {
-                console.log(this.name);
+              
                 var studentId = this.value;
                 var studentName = this.name;
                 var url = 'http://devallei.dev/api/v1/leerlingen/status/'+studentId;
+                // get student status
                 $.getJSON(url, function(data) {
                     if (data.status !== "aanwezig") {
-                        // console.log(studentId);
-                        if (confirm("Hallo "+studentName+" wil je je aanmelden?")) {
+                        if (confirm("Hallo "+studentName+", wil je je aanmelden?")) {
 
-                            updateStudentStatus(studentId)
+                            updateStudentStatus(studentId, "aanwezig")
                         }
                     }
 
                     if (data.status == "aanwezig") {
                         if(confirm("Wil je je afmelden?")) {
-                            var win = openWindow(studentId);
                             
-                            var timer = setInterval(function() {   
-                                if(win.closed) {  
-                                    clearInterval(timer);  
-                                    var studentId = document.getElementById("signOutId").value;
-                                    var status = document.getElementById("signOutStatus").value;
-                                    if(status == "tussendoor_uit") {
-                                        var reason = '';
-                                        while (reason == '') {
-                                            if(reason = prompt("Wat is de reden?")) {
-                                                updateStudentStatus(studentId, status, reason); 
-
-                                            }
+                            var url = 'http://devallei.dev/api/v1/statuses/selectable';
+                            // get status options JSON
+                            $.getJSON(url, function(data) {
+                                var statusOptions = [{value:"", text:"-- Maak keuze --"}];
+                                $.each(data, function(i, status){
+                                    statusOptions.push(
+                                        {
+                                            value:status.status,
+                                            text:status.text
                                         }
-                                    } else {
-                                        
-                                        updateStudentStatus(studentId, status, reason); 
-                                    }
-                                    
-                                    
-                                    
-                                }  
-                            }, 100); 
+                                    );
+                                }); 
+
+                                var win = openWindow(studentId, statusOptions);
+                                
+                                var timer = setInterval(function() {   
+                                    if(win.closed) {  
+                                        clearInterval(timer);  
+                                        var studentId = document.getElementById("signOutId").value;
+                                        var status = document.getElementById("signOutStatus").value;
+                                        if(status == "tussendoor uit") {
+                                            var reason = '';
+                                            while (reason == '') {
+                                                if(reason = prompt("Wat is de reden?")) {
+                                                    updateStudentStatus(studentId, status, reason); 
+
+                                                }
+                                            }
+                                        } else {
+                                            
+                                            updateStudentStatus(studentId, status, reason); 
+                                        }                                     
+                                    }  
+                                }, 100); // close setInterval()
+                            }); // close getJSON status options
                         }
                     }
-                });     
-            });
-        });  
+                }); // close getJSON student status  
+            }); // close student button click function
+        }); // close getJSON coach group student
     }
 
 
@@ -150,44 +134,22 @@
         
         var url = 'http://devallei.dev/api/v1/leerlingen/updatestatus/'+student_id;
 
-       var jqxhr = $.post(url, {
+        $.post(url, {
             'status':status, 
             'reden':reason
-        },  function(data, status) 
+        },  function(satus) 
             {
-                console.log(data);
-                console.log(status);
+                console.log(satus);
                 
-            }, "json")
-                .done(function(data){
-                    if(data.status == "afwezig") {
-                        
-                        $("#studentBtn_"+student_id).css({'background': 'red'}).removeClass("aanwezig").addClass("afwezig");
-                    } else if (data.status == "aanwezig"){
-                        $("#studentBtn_"+student_id).css({'background': 'green'}).removeClass("afwezig").addClass("aanwezig");
-                    } else if (data.status == "tussendoor uit") {
-                        $("#studentBtn_"+student_id).css({'background': 'orange'}).removeClass("aanwezig").addClass("tussendoor_uit");
-                    }
+            }, "json").done(function(satus){
+                    $("#studentBtn_"+student_id).css({'background': satus.color});
                 });    
     }
 
-    function openWindow(studentId) {
-        var i; 
-        var options = [
-            {
-               value: '',
-               text: '-- Maak keuze --'
-            },
-            {
-               value: 'afmelden',
-               text: 'Afmelden'
-            }, 
-            {
-               value: 'tussendoor_uit',
-               text: 'Tussendoor uit'
-            }
-        ],
-        newWindow = window.open("", null, "height=200,width=400,status=yes,toolbar=no,menubar=no,location=no");  
+    function openWindow(studentId, options) {
+        var i;
+
+        newWindow = window.open("", null, "height=200,width=400,status=yes,toolbar=no,menubar=no,location=no,directories=no,");  
         
         newWindow.document.write("<select onChange='window.opener.setValue("+studentId+", this.value);window.close();'>");
         
@@ -207,6 +169,5 @@
         
         document.getElementById('signOutId').value = studentId;
         document.getElementById('signOutStatus').value = studentStatus;
-        // document.getElementById('signOutReason').value = studentReason;
     }
 </script>  

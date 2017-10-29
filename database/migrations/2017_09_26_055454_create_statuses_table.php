@@ -16,6 +16,9 @@ class CreateStatusesTable extends Migration
         Schema::create('statuses', function(Blueprint $table) {
             $table->increments('id');
             $table->string('status');
+            $table->string('text');
+            $table->string('color');
+            $table->boolean('student_selectable');
             $table->timestamps();
         });
     }
