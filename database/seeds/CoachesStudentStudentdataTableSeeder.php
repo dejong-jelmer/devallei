@@ -13,7 +13,7 @@ class CoachesStudentStudentdataTableSeeder extends Seeder
     public function run()
     {
         
-        factory(App\Models\Coach::class, 20)
+        factory(App\Models\Coach::class, 10)
         ->create()
         ->each(
             function ($coach) {

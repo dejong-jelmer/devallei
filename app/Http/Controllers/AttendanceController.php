@@ -36,7 +36,7 @@ class AttendanceController
     public function updateStudentAttendance($id, Request $request)
     {
         // Check if POST had status and / or reden 
-        $reason = null;
+        $reason = '';
         array_key_exists('status', $request->toArray()) ? $statusUpdate = $request->status : $statusUpdate = false;
         array_key_exists('reden', $request->toArray()) ? $reasonUpdate = $request->reden : $reasonUpdate = false;
         
@@ -80,7 +80,7 @@ class AttendanceController
             $student->save();
         }
 
-        return response()->json(['status' => $student->status->status, 'color' => $student->status->color, 'reden' => ($reason ? $reason->reason : null) ], 201);      
+        return response()->json(['id' => $student->id, 'status' => $student->status->status, 'color' => $student->status->color, 'reden' => ($reason ? $reason->reason : null) ], 201);      
         
         
     }

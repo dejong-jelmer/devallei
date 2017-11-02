@@ -17,50 +17,59 @@ class StatusesTableSeeder extends Seeder
                 'student_selectable' => 1, 
                 'text' => 'Afmelden', 
                 'color' => '#73C5E1',
+                'reason_requierd'=> 0,
             ],
             'aanwezig' => [
                 'student_selectable' => 0, 
                 'text' => 'Aanmelden',
                 'color' => '#5BB12F',
+                'reason_requierd'=> 0,
             ],
             'tussendoor uit' => [
                 'student_selectable' => 1,
                 'text' => 'Tussendoor uit',
                 'color' =>'#FFA200',
+                'reason_requierd'=> 1,
             ],
             'activiteit' => [
                 'student_selectable' => 0,
                 'text' => 'Activiteit, buiten school',
                 'color' => '#982395',
+                'reason_requierd'=> 0,
             ],
             'bso' => [
                 'student_selectable' => 0, 
                 'text' => 'Buitenschoolse opvang',
                 'color' => '#0087CB',
+                'reason_requierd'=> 0,
             ],
             'ziek' => [
                 'student_selectable' => 0,
                 'text' => 'Ziek',
                 'color' => '#9B539C',
+                'reason_requierd'=> 0,
             ],
             'ziek naar huis' => [
                 'student_selectable' => 1,
                 'text' => 'Ziek naar huis',
                 'color' => '#EB65A0',
+                'reason_requierd'=> 1,
             ],
             'bijzonder verlof' => [
                 'student_selectable' => 0, 
                 'text' => 'Bijzonder verlof',
                 'color' => '#354458',
+                'reason_requierd'=> 0,
             ],
         ];
 
-        foreach ($statuses as $status => $selectable) {
+        foreach ($statuses as $key => $value) {
             DB::Table('statuses')->insert([
-                'status' => $status,
-                'student_selectable' => $selectable['student_selectable'],
-                'text' => $selectable['text'],
-                'color' => $selectable['color'],
+                'status' => $key,
+                'text' => $value['text'],
+                'color' => $value['color'],
+                'student_selectable' => $value['student_selectable'],
+                'reason_requierd'=> $value['reason_requierd'],
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

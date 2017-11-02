@@ -1,173 +1,53 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <script src="jquery-3.2.1.js"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <script src="js/jquery/jquery-3.2.1.js"></script>
+        <script src="js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap/bootbox.min.js"></script>
+        <script src="js/core/functions.js"></script>
+        <script src="js/core/ajax.js"></script>
+
     </head>
-    <body>
+    <body style="overflow:hidden;">
         <input type="hidden" id="signOutStatus">
         <input type="hidden" id="signOutId">
-        <table>
-            <tr>
-                <td>Coachgroepen</td>
-                <td>       -----------------  </td>
-                <td>Leerlingen</td>
-            </tr>
-            <tr>
-                <td>
-                    <div id="coachGroupOutput"></div>
-                </td>
-                <td></td>
-                <td>
-                    <div id="studentsOutput"></div>
-                </td>
-            </tr>
-        </table>
+        <input type="hidden" id="signOutR_R">
+
+        <div class="container">
+            <div id="arrowBack" class="row" style="height: 100px; opacity: 0.0;";>
+                <button type="button" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-arrow-left"></span> Terug
+                </button>
+            </div>
+            <script>
+                $("#arrowBack").click(function(){
+                    $("#coachColumn").fadeIn("slow");
+                    $("#studentColumn").fadeOut("fast");
+                    $("#arrowBack").animate({opacity: "0.0"});
+                });
+            </script>
+            <!-- <div class="row"> -->
+                <div id="coachColumn" class="col-sm-4 col-md-offset-4">
+                    <div id="coachGroupOutput"> </div>
+                </div>
+                        
+                <div id="studentColumn" class="col-sm-4 col-md-offset-4">
+                    <div id="studentsOutput"> </div>
+                </div>
+            <!-- </div> -->
+        </div>
+        
+        <div id="modalOutput"></div>
         <script>
             jQuery(document).ready(function(){
                 getAllCoachGroups();               
-            });
-            
+            });          
         </script>
+        
+
     </body>
 </html>
-<script>
-    // get all coachgroups from API
-    // @return JSON {all coach.groups}
-    // @return button value coach.id 
-    function getAllCoachGroups()
-    {
-        var url = "http://devallei.dev/api/v1/coachgroep/alle";
-
-        return $.getJSON(url, function(data){
-                        
-            $.each(data, function(i, coach){
-                                                                
-                $("#coachGroupOutput").append("<button class='coachGroupButton' value='"+coach.id+"'>"+coach.coach+"</button>"+" <br>");      
-            });
-
-            $('.coachGroupButton').click(function(){  
-                getCoachGroupStudents(this.value);
-            });  
-        });
-    }
-
-    //  get all students from API related to coachgroup
-    //  @var coach.id (clicked button value)
-    //  @return JSON {all the choachgroups students student[studentdata] / student[status]}
-    //  @return button value student.id
-    function getCoachGroupStudents(id)
-    {
-        var url = "http://devallei.dev/api/v1/coachgroep/"+id
-
-        $("#studentsOutput").empty();
-        // get all student from coachgroup                    
-        return $.getJSON(url, function(data) {  
-            
-            $.each(data, function(i, student) {
-                            
-                $("#studentsOutput").append("<button id='studentBtn_"+student.id+"' name='"+student.studentdata.voornaam+"' class='studentButton' type='button' value='"+student.id+"' style='background:"+student.status.color+"'>"+"id=:"+student.id+": "+student.studentdata.voornaam+"</button> <br>");
-            });
-
-            $('.studentButton').click(function() {
-              
-                var studentId = this.value;
-                var studentName = this.name;
-                var url = 'http://devallei.dev/api/v1/leerlingen/status/'+studentId;
-                // get student status
-                $.getJSON(url, function(data) {
-                    if (data.status !== "aanwezig") {
-                        if (confirm("Hallo "+studentName+", wil je je aanmelden?")) {
-
-                            updateStudentStatus(studentId, "aanwezig")
-                        }
-                    }
-
-                    if (data.status == "aanwezig") {
-                        if(confirm("Wil je je afmelden?")) {
-                            
-                            var url = 'http://devallei.dev/api/v1/statuses/selectable';
-                            // get status options JSON
-                            $.getJSON(url, function(data) {
-                                var statusOptions = [{value:"", text:"-- Maak keuze --"}];
-                                $.each(data, function(i, status){
-                                    statusOptions.push(
-                                        {
-                                            value:status.status,
-                                            text:status.text
-                                        }
-                                    );
-                                }); 
-
-                                var win = openWindow(studentId, statusOptions);
-                                
-                                var timer = setInterval(function() {   
-                                    if(win.closed) {  
-                                        clearInterval(timer);  
-                                        var studentId = document.getElementById("signOutId").value;
-                                        var status = document.getElementById("signOutStatus").value;
-                                        if(status == "tussendoor uit") {
-                                            var reason = '';
-                                            while (reason == '') {
-                                                if(reason = prompt("Wat is de reden?")) {
-                                                    updateStudentStatus(studentId, status, reason); 
-
-                                                }
-                                            }
-                                        } else {
-                                            
-                                            updateStudentStatus(studentId, status, reason); 
-                                        }                                     
-                                    }  
-                                }, 100); // close setInterval()
-                            }); // close getJSON status options
-                        }
-                    }
-                }); // close getJSON student status  
-            }); // close student button click function
-        }); // close getJSON coach group student
-    }
-
-
-    function updateStudentStatus(student_id, status, reason) 
-    {
-        
-        var url = 'http://devallei.dev/api/v1/leerlingen/updatestatus/'+student_id;
-
-        $.post(url, {
-            'status':status, 
-            'reden':reason
-        },  function(satus) 
-            {
-                console.log(satus);
-                
-            }, "json").done(function(satus){
-                    $("#studentBtn_"+student_id).css({'background': satus.color});
-                });    
-    }
-
-    function openWindow(studentId, options) {
-        var i;
-
-        newWindow = window.open("", null, "height=200,width=400,status=yes,toolbar=no,menubar=no,location=no,directories=no,");  
-        
-        newWindow.document.write("<select onChange='window.opener.setValue("+studentId+", this.value);window.close();'>");
-        
-        for (i=0; i<options.length; i++) {
-            newWindow.document.write("<option value='"+options[i].value+"'>");  
-            newWindow.document.write(options[i].text);  
-            newWindow.document.write("</option>");
-        }
-        
-        newWindow.document.write("</select>");
-        
-        return newWindow;
-    }
-
-    function setValue(studentId, studentStatus) {
-        
-        
-        document.getElementById('signOutId').value = studentId;
-        document.getElementById('signOutStatus').value = studentStatus;
-    }
-</script>  
