@@ -11,7 +11,7 @@
 |
 */
 
-$app->group(['prefix' => 'api/v1/', 'middleware' => ['cors', /*'auth'*/]], function($app){
+$app->group(['prefix' => 'api/v1/', 'middleware' => [/*'cors', 'auth'*/]], function($app){
 
     $app->get('/', function() {   
         return view('index');
