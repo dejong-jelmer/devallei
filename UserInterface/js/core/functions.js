@@ -37,3 +37,24 @@ function setValue(studentStatus)
         document.getElementById('signOutR_R').value = studentStatus.r_r;
 }
 
+function showReasonField(i,reason) 
+{
+    
+    $("#reasonBtn"+i).click(function(){
+        var btn = document.getElementById("reasonField"+i);
+        var field = $("#reasonField"+i);
+
+        field.prepend("<button id='reasonBtn"+i+"'>+</button>");
+
+        if(btn.style.display == 'none') {
+            btn.style.display = 'block';
+            field.append(reason);
+        } else {
+            btn.style.display = 'none';
+            field.empty();
+        }
+
+    });
+
+}
+

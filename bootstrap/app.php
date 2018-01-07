@@ -64,15 +64,14 @@ $app->singleton(
 // ]);
 
 $app->routeMiddleware([
-    'auth' => App\Http\Middleware\Authenticate::class,
+    // 'auth' => App\Http\Middleware\Authenticate::class,
+    'cors' => App\Http\Middleware\CorsMiddleware::class,
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
 ]);
 
 $app->middleware([
-        App\Http\Middleware\RequestLogMiddleware::class
-    ]);
-
-$app->middleware([
-        App\Http\Middleware\CorsMiddleware::class
+        App\Http\Middleware\RequestLogMiddleware::class,
+        App\Http\Middleware\CorsMiddleware::class,
     ]);
 
 

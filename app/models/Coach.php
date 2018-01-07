@@ -37,7 +37,7 @@ class Coach extends Model
     // Model methods
     public function getStudents()
     {
-       return $this->students()->with('studentdata')->with('status')->get();
+       return $this->students()->with('studentdata')->with('status')->with('reason')->get();
     }
 
 

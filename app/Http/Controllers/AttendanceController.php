@@ -35,11 +35,16 @@ class AttendanceController
      */
     public function updateStudentAttendance($id, Request $request)
     {
+        $reason = false;
+        $statusUpdate = false;
+        $reasonUpdate = false;
+
+        // hier nog naar kijken want nu wordt reden altijd in request meegegeven en bestaat array key reden dus en wordt $reasonUpdate dus een lege string en niet "false" waar die later wel op checked wordt.
         // Check if POST had status and / or reden 
-        $reason = '';
         array_key_exists('status', $request->toArray()) ? $statusUpdate = $request->status : $statusUpdate = false;
-        array_key_exists('reden', $request->toArray()) ? $reasonUpdate = $request->reden : $reasonUpdate = false;
+        (array_key_exists('reden', $request->toArray()) && $request->reden != '') ? $reasonUpdate = $request->reden : $reasonUpdate = false;
         
+
         try {
             
             $student = Student::findOrFail($id);
@@ -73,14 +78,18 @@ class AttendanceController
                 $reason->student()->associate($student);
                 $reason->status()->associate($status);
                 $reason->save();
+
+                $student->reason()->associate($reason);
+                // $student->save();
             }
 
             $student->setAttendance($status, $reason);
             $student->status()->associate($status);
             $student->save();
         }
+        // return $student->reason->reason;
 
-        return response()->json(['id' => $student->id, 'status' => $student->status->status, 'color' => $student->status->color, 'reden' => ($reason ? $reason->reason : null) ], 201);      
+        return response()->json(['id' => $student->id, 'status' => $student->status->status, 'color' => $student->status->color, 'reden' => ($reason ? $student->reason->reason : null) ], 201);      
         
         
     }

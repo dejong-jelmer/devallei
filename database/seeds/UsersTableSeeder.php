@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
         
         DB::Table('users')->insert([
                 'naam' => 'devallei',
-                'wachtwoord' => str_random(8),
+                'wachtwoord' => app('hash')->make('1234'),
                 'api_token' => 'KSJqsJATbhPru78C5D2mbmnH0jGgQRUoWZONcLvch95OvB90LbHIS9ij3RJj',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

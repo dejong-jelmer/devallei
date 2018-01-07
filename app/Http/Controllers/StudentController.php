@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Coach;
+use App\Models\Reason;
 use App\Models\Student;
 use App\Models\Studentdata;
 use Illuminate\Http\Request;
@@ -64,6 +65,7 @@ class StudentController
         try {
             
             $student = Student::findOrFail($id);
+
         } catch (ModelNotFoundException $e) {
             return response()->json([
                     'error'=> [
@@ -117,7 +119,7 @@ class StudentController
         
         $students = Student::with('studentdata');
 
-        return [ 'data' => $students->get() ];
+        return $students->get();
         
     }
 
@@ -133,7 +135,7 @@ class StudentController
     {
         try {
 
-            $student = Student::findOrFail($id)->status()->first();
+            $student = Student::findOrFail($id);
       
         } catch (ModelNotFoundException $e) {
             return response()->json([
@@ -144,8 +146,13 @@ class StudentController
                 ], 404);
         }
 
-        return response()->json(['status' => $student->status, /*'reden' => $student->reason[0]->reason */], 200);
+        $reason = $student->reason;
+        
+        // $reason = Reason::where('status_id', $student->status->id)->where('student_id', $student->id)->orderBy('updated_at', 'desc')->first();
+
+        return response()->json(['leerling' => $student, 'status' => $student->status, 'reden' => $reason], 200);
     }
 
+    
 
 }

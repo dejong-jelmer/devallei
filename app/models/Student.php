@@ -58,9 +58,9 @@ class Student extends Model
         return $this->belongsTo('App\Models\Status', 'status_id');
     }
 
-    public function reasons()
+    public function reason()
     {
-        return $this->hasMany('App\Models\Reason');
+        return $this->belongsTo('App\Models\Reason', 'reason_id');
     }
 
     

@@ -38,8 +38,8 @@ class StatusesTableSeeder extends Seeder
                 'reason_requierd'=> 0,
             ],
             'bso' => [
-                'student_selectable' => 0, 
-                'text' => 'Buitenschoolse opvang',
+                'student_selectable' => 1, 
+                'text' => 'BSO',
                 'color' => '#0087CB',
                 'reason_requierd'=> 0,
             ],
